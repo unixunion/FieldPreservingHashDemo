@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
  *
  * Implementation:
  *  1. Hash the input
- *  2. Hash digits, spaces and chars aligned with input data
- *  3. discard the rest of the hash
+ *  2. Return hash, placing digits, spaces and chars aligned with input data
+ *  3. Scan for additional digits / alphas by recursive hashing if needed.
  *
  */
 public class FieldPreservingHash {
@@ -55,7 +55,7 @@ public class FieldPreservingHash {
         }
 
         lastExtractedDigitIndex = this.hash.length-1;
-        logger.debug("Out of digits, recursing to find more");
+        logger.warn("Out of digits, recursing to find more");
         logger.debug("lastExtractedDigitIndex {}", lastExtractedDigitIndex );
         logger.debug("old hash length: {}", this.hash.length );
 
