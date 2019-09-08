@@ -30,14 +30,8 @@ public class FphdemoApplicationTests {
 	public void testCCNumber() {
 		try {
 			FieldPreservingHash fph = new FieldPreservingHash("1234 5678 9123 1234");
-			assertThat(fph.hash()).isEqualTo("3779 2869 0587 5929");
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
+			assertThat(fph.hash()).isEqualTo("9610 5612 1374 9443");
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -47,14 +41,8 @@ public class FphdemoApplicationTests {
 	public void testNumberSpacePunctuationPreserve() {
 		try {
 			FieldPreservingHash fph = new FieldPreservingHash("21 baker street, london");
-			assertThat(fph.hash()).isEqualTo("55 mLLPj CTzzLa, hHngFc");
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
+			assertThat(fph.hash()).isEqualTo("02 KCvgr uOTqaV, krxbEu");
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -73,26 +61,11 @@ public class FphdemoApplicationTests {
 			for (BigInteger i = BigInteger.valueOf(0); i.compareTo(max) <= 0; i=i.add(BigInteger.ONE)) {
 				FieldPreservingHash fph = new FieldPreservingHash(i.toString());
 				outputs.add(fph.hash());
-				//System.out.println(fph.hash());
 			}
-
-//			final int[] collisions = {0};
-//			outputs.forEach(h -> {
-//				outputs.remove(h);
-//				while (outputs.contains(h)) {
-//					collisions[0]++;
-//				}
-//			});
 
 			System.out.println("done");
 
-
-//			assertThat(fph.hash()).isEqualTo("55 mLLPj CTzzLa, hHngFc");
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
 			e.printStackTrace();
 		}
 	}

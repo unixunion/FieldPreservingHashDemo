@@ -1,19 +1,15 @@
 package com.kegans.fphdemo;
 
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 
@@ -31,114 +27,110 @@ import java.util.regex.Pattern;
 public class FieldPreservingHash {
 
     private Logger logger = LoggerFactory.getLogger(FieldPreservingHash.class);
-    MessageDigest md = MessageDigest.getInstance("SHA3-256");
+    MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-    SecretKey key;
-    CipherOutputStream output;
-    ByteArrayOutputStream outputStream;
-    String data;
+    SimpleMeterRegistry registry = new SimpleMeterRegistry ();
+    Timer timer = registry.timer("app.hash");
+
+    byte[] data;
+    byte[] hash;
 
     int lastExtractedDigitIndex = 0;
     int lastAlphaIndex = 0;
 
 
-    public FieldPreservingHash(String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-
-        this.data = data;
-        byte[] hash = md.digest(data.getBytes());
-
-        this.key = new SecretKeySpec(hash, 0, hash.length, "AES");
-        Cipher c = Cipher.getInstance("AES");
-        c.init(Cipher.ENCRYPT_MODE, key);
-
-        // byte output stream
-        outputStream = new ByteArrayOutputStream();
-
-        // a cipher outputstream to do the encryption
-        output = new CipherOutputStream(outputStream, c);
+    public FieldPreservingHash(String data) throws NoSuchAlgorithmException {
+        this.data = data.getBytes();
+        this.hash = md.digest(data.getBytes());
     }
 
 
     // get Digit, extend encrypted data if no more digits.
     private char getDigit() throws IOException {
-        for (int i=lastExtractedDigitIndex; i<getBase64EncodedValue().getBytes().length; i++) {
-            if (Character.isDigit(getBase64EncodedValue().getBytes()[i])) {
+
+        for (int i=lastExtractedDigitIndex; i<this.hash.length; i++) {
+            if (Character.isDigit(this.hash[i])) {
                 lastExtractedDigitIndex = i+1;
-                return (char) getBase64EncodedValue().getBytes()[i];
+                return (char) this.hash[i];
             }
         }
 
+        lastExtractedDigitIndex = this.hash.length-1;
         logger.debug("Out of digits, recursing to find more");
-        output.write(this.data.getBytes());
-        output.flush();
+        logger.debug("lastExtractedDigitIndex {}", lastExtractedDigitIndex );
+        logger.debug("old hash length: {}", this.hash.length );
+
+        this.data = ArrayUtils.addAll(this.data, this.data);
+        byte[] tmpHash = ArrayUtils.addAll(this.hash, md.digest(this.data));
+        this.hash = tmpHash;
+
+        logger.debug("new hash length: {}", this.hash.length );
+
         return getDigit();
 
     }
 
     // get alpha char, extend data if no chars found
-    private char getAlpha() throws IOException {
-        for (int i=lastAlphaIndex; i<getBase64EncodedValue().getBytes().length; i++) {
-            if (Character.isAlphabetic(getBase64EncodedValue().getBytes()[i])) {
+    private char getAlpha() {
+
+        for (int i=lastAlphaIndex; i<this.hash.length; i++) {
+            if (Character.isAlphabetic(this.hash[i])) {
                 lastAlphaIndex = i+1;
-                return (char) getBase64EncodedValue().getBytes()[i];
+                return (char) this.hash[i];
             }
         }
 
         logger.debug("Out of alpha chars, recursing to find more");
-        output.write(this.data.getBytes());
-        output.flush();
+
+
+        this.data = ArrayUtils.addAll(this.data, this.data);
+        byte[] tmpHash = ArrayUtils.addAll(this.hash, md.digest(this.data));
+        this.hash = tmpHash;
+
         return getAlpha();
 
     }
 
 
     // hash data
-    public String hash() throws IOException {
-        this.output.write(this.data.getBytes());
-        this.output.flush();
+    public String hash() {
 
         final String[] response = {new String()};
 
-        this.data.chars().forEach(ch -> {
+        timer.record(() -> {
 
-            if (Character.isDigit(ch)) {
-                try {
-                    response[0] = response[0] + getDigit();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("unable to get digits");
-                }
-            } else if (Character.isSpaceChar(ch)) {
-                response[0] = response[0] + " ";
-            } else if (Pattern.matches("\\p{Punct}", String.valueOf((char)ch))) {
-                logger.info("punctuation preserve");
-                response[0] = response[0] + (char)ch;
-            } else {
-                if (Character.isAlphabetic(ch)) {
-                    //logger.info("char: {}", (char)encodedBase64[0].getBytes()[0]);
+
+            for (byte ch : this.data) {
+
+                if (Character.isDigit(ch)) {
                     try {
-                        response[0] = response[0] + getAlpha();
+                        response[0] = response[0] + getDigit();
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException("unable to get digits");
                     }
+                } else if (Character.isSpaceChar(ch)) {
+                    response[0] = response[0] + " ";
+                } else if (Pattern.matches("\\p{Punct}", String.valueOf((char)ch))) {
+                    logger.debug("punctuation preserve");
+                    response[0] = response[0] + (char)ch;
+                } else {
+                    if (Character.isAlphabetic(ch)) {
+                        response[0] = response[0] + getAlpha();
+                    }
                 }
             }
+
+
         });
+
+        logger.info("time {}", timer.totalTime(TimeUnit.MILLISECONDS));
 
         return response[0];
 
     }
 
 
-    public String getBase64EncodedValue() {
-        return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-    }
-
-
-    public ByteArrayOutputStream getOutputStream() {
-        return outputStream;
-    }
 
 
 }

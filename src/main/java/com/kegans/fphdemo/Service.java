@@ -43,10 +43,6 @@ public class Service implements ApplicationListener {
     private Logger logger = LoggerFactory.getLogger(Service.class);
     MessageDigest md;
 
-//    private char[] alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-_ ".toCharArray();
-//    private char[] punctuations = ".,:;".toCharArray();
-//    private char[] numbers = "0123456789".toCharArray();
-
     @Override
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
         if (applicationEvent instanceof ContextRefreshedEvent) {
