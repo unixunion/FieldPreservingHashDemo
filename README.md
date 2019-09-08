@@ -1,11 +1,9 @@
 # FPH
 
-This is a demo of doing Field Preserving Hashing, using AES cryptography and then discarding most of the crypto in order 
-to produce a relatively unique hash.
+This is a demo of doing Field Preserving Hashing, with AES and discarding portions of the hash to maintain a matching style
+between the input format and the hash, Preserving digit, space, punctuation and alpha char position.
 
-The algorithm preserve digit, space, punctuation and alpha char position.
-
-There are collisions when using small inputs, due to not having a fixed output size.  
+Because this is not a fixed size hashing function, there are collisions when using small inputs.
 
 ## Usage
 
