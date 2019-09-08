@@ -5,6 +5,8 @@ to produce a relatively unique hash.
 
 The algorithm preserve digit, space, punctuation and alpha char position.
 
+There are collisions when using small inputs, due to not having a fixed output size.  
+
 ## Usage
 
 ```bash
