@@ -18,10 +18,9 @@ import java.util.regex.Pattern;
  * and spaces in the output format to match the input format.
  *
  * Implementation:
- *  1. Encrypt the data with the data itself as the key
- *  2. Convert the encrypted data to a Base64 encoded
- *  3. Get digits, spaces and chars from the Base64 encoded to match input style
- *  4. discard the rest of the encrypted bits
+ *  1. Hash the input
+ *  2. Hash digits, spaces and chars aligned with input data
+ *  3. discard the rest of the hash
  *
  */
 public class FieldPreservingHash {
