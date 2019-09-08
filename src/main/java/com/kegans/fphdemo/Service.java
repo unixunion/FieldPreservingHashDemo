@@ -39,7 +39,7 @@ public class Service implements ApplicationListener {
 
 
     @PostMapping("/hash")
-    public byte[] hash(@RequestBody String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+    public byte[] hash(@RequestBody String data) throws NoSuchAlgorithmException {
         FieldPreservingHash container = new FieldPreservingHash(data);
         String response = container.hash();
         return response.getBytes();
