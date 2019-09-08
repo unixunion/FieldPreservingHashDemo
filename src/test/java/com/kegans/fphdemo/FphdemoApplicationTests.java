@@ -29,7 +29,7 @@ public class FphdemoApplicationTests {
 	@Test
 	public void testCCNumber() {
 		try {
-			FieldPreservingHash fph = new FieldPreservingHash("1234 5678 9123 1234", "AES");
+			FieldPreservingHash fph = new FieldPreservingHash("1234 5678 9123 1234", "SHA-256");
 			assertThat(fph.hash()).isEqualTo("9610 5612 1374 9443");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -40,7 +40,7 @@ public class FphdemoApplicationTests {
 	@Test
 	public void testNumberSpacePunctuationPreserve() {
 		try {
-			FieldPreservingHash fph = new FieldPreservingHash("21 baker street, london", "AES");
+			FieldPreservingHash fph = new FieldPreservingHash("21 baker street, london", "SHA-256");
 			assertThat(fph.hash()).isEqualTo("02 KCvgr uOTqaV, krxbEu");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -59,7 +59,7 @@ public class FphdemoApplicationTests {
 			System.out.println(max.compareTo(max));
 
 			for (BigInteger i = BigInteger.valueOf(0); i.compareTo(max) <= 0; i=i.add(BigInteger.ONE)) {
-				FieldPreservingHash fph = new FieldPreservingHash(i.toString(), "AES");
+				FieldPreservingHash fph = new FieldPreservingHash(i.toString(), "SHA-256");
 				outputs.add(fph.hash());
 			}
 
