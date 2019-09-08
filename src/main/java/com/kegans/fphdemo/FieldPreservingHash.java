@@ -40,7 +40,7 @@ public class FieldPreservingHash {
 
 
     public FieldPreservingHash(String data, String algorithm) throws NoSuchAlgorithmException {
-        logger.info("instantiating with algo: {]", algorithm);
+        logger.info("instantiating with algo: {}", algorithm);
         this.md = MessageDigest.getInstance(algorithm);
         this.data = data.getBytes();
         this.hash = md.digest(data.getBytes());
