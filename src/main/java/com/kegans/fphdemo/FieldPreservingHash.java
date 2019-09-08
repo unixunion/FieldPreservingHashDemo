@@ -23,10 +23,11 @@ import java.util.regex.Pattern;
  *  3. Scan for additional digits / alphas by recursive hashing if needed.
  *
  */
+
 public class FieldPreservingHash {
 
     private Logger logger = LoggerFactory.getLogger(FieldPreservingHash.class);
-    MessageDigest md = MessageDigest.getInstance("SHA-256");
+    MessageDigest md;
 
     SimpleMeterRegistry registry = new SimpleMeterRegistry ();
     Timer timer = registry.timer("app.hash");
@@ -38,7 +39,9 @@ public class FieldPreservingHash {
     int lastAlphaIndex = 0;
 
 
-    public FieldPreservingHash(String data) throws NoSuchAlgorithmException {
+    public FieldPreservingHash(String data, String algorithm) throws NoSuchAlgorithmException {
+        logger.info("instantiating with algo: {]", algorithm);
+        this.md = MessageDigest.getInstance(algorithm);
         this.data = data.getBytes();
         this.hash = md.digest(data.getBytes());
     }
