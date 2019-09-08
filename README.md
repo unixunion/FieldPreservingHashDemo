@@ -3,6 +3,8 @@
 This is a demo of doing Field Preserving Hashing, using AES cryptography and then discarding most of the crypto in order 
 to produce a relatively unique hash.
 
+The algorithm preserve digit, space, punctuation and alpha char position.
+
 ## Usage
 
 ```bash
