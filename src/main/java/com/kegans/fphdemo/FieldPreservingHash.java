@@ -68,7 +68,7 @@ public class FieldPreservingHash {
             }
         }
 
-        logger.warn("Out of digits, recursing to find more");
+        logger.debug("Out of digits, recursing to find more");
         output.write(this.data.getBytes());
         output.flush();
         return getDigit();
@@ -84,7 +84,7 @@ public class FieldPreservingHash {
             }
         }
 
-        logger.warn("Out of alpha chars, recursing to find more");
+        logger.debug("Out of alpha chars, recursing to find more");
         output.write(this.data.getBytes());
         output.flush();
         return getAlpha();
