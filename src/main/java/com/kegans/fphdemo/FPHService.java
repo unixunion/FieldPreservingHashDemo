@@ -25,8 +25,6 @@ import java.security.Security;
  */
 @Component
 @RestController
-@PropertySource("classpath:application.properties")
-@Configuration
 @Service
 public class FPHService implements ApplicationListener {
 
