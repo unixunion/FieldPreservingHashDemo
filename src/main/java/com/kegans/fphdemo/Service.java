@@ -41,7 +41,6 @@ import java.security.*;
 public class Service implements ApplicationListener {
 
     private Logger logger = LoggerFactory.getLogger(Service.class);
-    MessageDigest md;
 
     @Override
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
@@ -52,12 +51,6 @@ public class Service implements ApplicationListener {
                 logger.info("provider: {}", p.getInfo());
             }
 
-            try {
-                md = MessageDigest.getInstance("SHA3-256");
-
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
         }
     }
 
