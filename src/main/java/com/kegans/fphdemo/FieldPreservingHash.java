@@ -44,7 +44,7 @@ public class FieldPreservingHash {
     }
 
 
-    // get Digit, extend encrypted data if no more digits.
+    // get Digit, extend hashed data if no more digits.
     private char getDigit() throws IOException {
 
         for (int i=lastExtractedDigitIndex; i<this.hash.length; i++) {
@@ -69,7 +69,7 @@ public class FieldPreservingHash {
 
     }
 
-    // get alpha char, extend data if no chars found
+    // get alpha char, extend hashed data if no chars found
     private char getAlpha() {
 
         for (int i=lastAlphaIndex; i<this.hash.length; i++) {
