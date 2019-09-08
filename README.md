@@ -11,9 +11,9 @@ Because this is not a fixed size hashing function, there are collisions when usi
 
 $> curl -H "Content-Type: application/text; charset=utf-8" -X POST http://localhost:8080/hash
  -d "12 sheet street, london"
-94 cfJeQ ZbqRgT, DsHDCe
+30 XxljF HNsHTc, xSOUEP
  
 $> curl -H "Content-Type: application/text; charset=utf-8" -X POST http://localhost:8080/hash
   -d "1234 5678 9123 1523"
-7071 7651 6826 5543
+5686 7014 1525 2533
 ```
