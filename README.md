@@ -9,8 +9,7 @@ Because this is not a fixed size hashing function, there are collisions when usi
 
 ```bash
 
-$> curl -H "Content-Type: application/text; charset=utf-8" -X POST http://localhost:8080/hash
- -d "12 sheet street, london"
+$> curl -H "Content-Type: application/text; charset=utf-8" -X POST http://localhost:8080/hash -d "12 sheet street, london"
 30 XxljF HNsHTc, xSOUEP
  
 $> curl -H "Content-Type: application/text; charset=utf-8" -X POST http://localhost:8080/hash
